@@ -241,32 +241,23 @@ The GPU implementation reduced execution time from approximately **22.57 seconds
 
 ---
 
-## 📁 Suggested Repository Structure
+## 📁 Repository Structure
 
 ```text
 CyberShield-AI/
 │
 ├── CyberShield_AI.ipynb
-├── README.md
-│
-├── report/
-│   └── CyberShield_AI_Report.pdf
-│
-├── figures/
-│   ├── class_distribution.png
-│   ├── engineered_features.png
-│   ├── correlation.png
-│   ├── model_performance.png
-│   ├── gpu_timing.png
-│   ├── gpu_utilization.png
-│   └── gpu_memory.png
-│
-└── requirements.txt
+├── CyberShield_AI_Report.pdf
+└── README.md
 ```
 
-> The CIC-IDS2017 dataset is not stored directly in the repository. It can be accessed separately through the dataset source.
+### Files
 
----
+- **`CyberShield_AI.ipynb`** — Complete GPU-accelerated data science workflow, including data loading, preprocessing, EDA, feature engineering, model training, evaluation, and GPU performance analysis.
+- **`CyberShield_AI_Report.pdf`** — Full project report containing the methodology, experiments, results, discussion, limitations, and future work.
+- **`README.md`** — Overview of the project, dataset, methodology, technologies, and main results.
+
+> **Note:** The CIC-IDS2017 dataset is not included in this repository due to its size. The notebook retrieves the dataset using KaggleHub.
 
 ## 🔮 Future Work
 
