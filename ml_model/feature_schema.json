@@ -1,0 +1,69 @@
+{
+  "features": [
+    "bwd_packet_length_std",
+    "bwd_packet_length_mean",
+    "bwd_packet_length_max",
+    "packet_length_std",
+    "max_packet_length",
+    "packet_length_variance",
+    "avg_bytes_per_packet",
+    "fwd_bwd_packet_ratio"
+  ],
+  "feature_ranges": {
+    "bwd_packet_length_std": {
+      "min": 0,
+      "typical_benign": 45.61,
+      "typical_attack": 121.01,
+      "max_suggested": 503.31
+    },
+    "bwd_packet_length_mean": {
+      "min": 0,
+      "typical_benign": 91.02,
+      "typical_attack": 230.99,
+      "max_suggested": 960.19
+    },
+    "bwd_packet_length_max": {
+      "min": 0,
+      "typical_benign": 263.2,
+      "typical_attack": 670.84,
+      "max_suggested": 2796.53
+    },
+    "packet_length_std": {
+      "min": 0,
+      "typical_benign": 60.78,
+      "typical_attack": 142.74,
+      "max_suggested": 597.98
+    },
+    "max_packet_length": {
+      "min": 0,
+      "typical_benign": 323.42,
+      "typical_attack": 728.82,
+      "max_suggested": 3031.11
+    },
+    "packet_length_variance": {
+      "min": 0,
+      "typical_benign": 3641.43,
+      "typical_attack": 8038.41,
+      "max_suggested": 33170.77
+    },
+    "avg_bytes_per_packet": {
+      "min": 0,
+      "typical_benign": 70.03,
+      "typical_attack": 739.26,
+      "max_suggested": 1521.12
+    },
+    "fwd_bwd_packet_ratio": {
+      "min": 0,
+      "typical_benign": 1.0,
+      "typical_attack": 1.0,
+      "max_suggested": 2.48
+    }
+  },
+  "demo_model_metrics": {
+    "accuracy": 0.9541,
+    "precision": 0.9509,
+    "recall": 0.8568,
+    "f1_score": 0.9014
+  },
+  "notes": "Demo model trained on synthetic data calibrated to the real correlation/EDA statistics reported in CyberShield_AI.ipynb. See ml_model/train_model.py for the full methodology."
+}

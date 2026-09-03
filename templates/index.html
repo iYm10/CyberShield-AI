@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+{% block content %}
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand"><span class="brand-mark">🛡️</span> CyberShield AI</a>
+    <ul class="nav-links">
+      <li><a href="#dataset">Dataset</a></li>
+      <li><a href="#eda">EDA</a></li>
+      <li><a href="#models">Models</a></li>
+      <li><a href="#gpu">GPU Performance</a></li>
+      <li><a href="#demo">Live Demo</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a class="btn btn-ghost btn-sm" href="{{ repo_url }}" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-primary btn-sm" href="#demo">Try Live Demo</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="container hero-inner">
+    <span class="eyebrow">⚡ GPU-Accelerated Machine Learning · RAPIDS cuDF &amp; cuML</span>
+    <h1>Detecting Malicious Network Traffic with <span>CyberShield AI</span></h1>
+    <p class="lead">
+      An end-to-end intrusion detection pipeline trained on 1.5 million real network flows
+      from the CIC-IDS2017 dataset — cleaned, engineered, and modeled entirely on GPU,
+      reaching <strong style="color:var(--text)">99.80% accuracy</strong> with a
+      <strong style="color:var(--text)">14.58× GPU speedup</strong> over CPU.
+    </p>
+    <div class="hero-actions">
+      <a href="#demo" class="btn btn-primary">Try the Live Demo</a>
+      <a href="{{ notebook_url }}" target="_blank" rel="noopener" class="btn btn-ghost">View Notebook</a>
+      <a href="{{ report_url }}" target="_blank" rel="noopener" class="btn btn-ghost">Download Report (PDF)</a>
+    </div>
+    <div class="stat-grid reveal">
+      {% for s in hero_stats %}
+      <div class="stat-cell">
+        <span class="value">{{ s.value }}</span>
+        <span class="label">{{ s.label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</header>
+
+<section id="problem">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Problem Statement</span>
+      <h2>Manual traffic inspection doesn't scale</h2>
+      <p>
+        Modern networks generate millions of flows. Denial-of-service attacks, brute-force attempts,
+        bot activity, port scanning, infiltration, and web attacks can all cause service disruption
+        and data loss — and none of it can be caught by hand.
+      </p>
+    </div>
+    <div class="grid grid-2 reveal">
+      <div class="card">
+        <h4 style="margin-top:0;">Research Question</h4>
+        <p style="color:var(--text-dim); margin-bottom:0;">
+          Can GPU-accelerated machine learning detect malicious network flows accurately and
+          efficiently on a dataset containing more than one million records?
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="margin-top:0;">Practical Value</h4>
+        <p style="color:var(--text-dim); margin-bottom:0;">
+          A system that flags malicious flows in near real time — with the throughput to keep up
+          with high-volume network traffic — supports faster detection and response than manual
+          or rule-based inspection alone.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="dataset">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Dataset</span>
+      <h2>CIC-IDS2017 Network Intrusion Dataset</h2>
+      <p>1.5 million flows loaded from 8 capture files spanning a full working week of labeled benign and attack traffic, cleaned down to 1,373,802 modeling-ready rows across 72 features.</p>
+    </div>
+    <div class="grid grid-3 reveal">
+      {% for s in dataset_stats %}
+      <div class="mini-stat">
+        <span class="value">{{ s.value }}</span>
+        <span class="label">{{ s.label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="eda">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Exploratory Data Analysis</span>
+      <h2>What the traffic patterns reveal</h2>
+      <p>Real plots generated directly from the project notebook — class balance, source-file distribution, feature correlation, and engineered-feature separation.</p>
+    </div>
+    <div class="grid grid-3 reveal">
+      {% for c in charts %}
+      <div class="chart-card">
+        <img src="{{ url_for('static', filename='images/charts/' ~ c.file) }}" alt="{{ c.title }}" loading="lazy" data-lightbox>
+        <div class="chart-body">
+          <h4>{{ c.title }}</h4>
+          <p>{{ c.caption }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="feature-engineering">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Feature Engineering</span>
+      <h2>Two new features, one clear winner</h2>
+      <p>Kept deliberately simple and interpretable — created before EDA so their behavior could be validated against the data.</p>
+    </div>
+    <div class="grid grid-2 reveal">
+      {% for f in engineered_features %}
+      <div class="card feat-card {{ 'useful' if f.useful else 'not-useful' }}">
+        <span class="tag {{ 'tag-useful' if f.useful else 'tag-weak' }}">{{ 'Useful signal' if f.useful else 'Weak signal' }}</span>
+        <h4>{{ f.name }}</h4>
+        <code>{{ f.formula }}</code>
+        <p style="color:var(--text-dim); margin:0; font-size:14px;">{{ f.insight }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="card reveal" style="margin-top:20px;">
+      <h4 style="margin-top:0;">Top features correlated with attack traffic</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th class="num">|Correlation| with is_attack</th></tr></thead>
+          <tbody>
+            {% for name, corr in top_correlations %}
+            <tr>
+              <td style="font-family:var(--mono); font-size:13.5px;">{{ name }}</td>
+              <td class="num">{{ '%.3f'|format(corr) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="models">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Machine Learning Models</span>
+      <h2>Three GPU-accelerated classifiers, one clear winner</h2>
+      <p>Logistic Regression, Random Forest, and Linear SVC — all trained with cuML on the GPU and evaluated on an untouched, naturally-distributed test set.</p>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th class="num">Accuracy</th>
+            <th class="num">Precision</th>
+            <th class="num">Recall</th>
+            <th class="num">F1-Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in model_results %}
+          <tr class="{{ 'highlight' if m.best }}">
+            <td>{{ m.model }}{% if m.best %}<span class="badge">Best</span>{% endif %}</td>
+            <td class="num">{{ '%.2f'|format(m.accuracy) }}%</td>
+            <td class="num">{{ '%.2f'|format(m.precision) }}%</td>
+            <td class="num">{{ '%.2f'|format(m.recall) }}%</td>
+            <td class="num">{{ '%.2f'|format(m.f1) }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid grid-2 reveal" style="margin-top:20px;">
+      <div class="chart-card">
+        <img src="{{ url_for('static', filename='images/charts/model_performance_comparison.png') }}" alt="Model performance comparison" data-lightbox>
+        <div class="chart-body"><h4>Model Performance Comparison</h4><p>Random Forest leads on every metric.</p></div>
+      </div>
+      <div class="card">
+        <h4 style="margin-top:0;">Random Forest — Confusion Matrix</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th></th><th class="num">Predicted Benign</th><th class="num">Predicted Attack</th></tr></thead>
+            <tbody>
+              <tr><td>Actual Benign</td><td class="num">{{ '{:,}'.format(confusion.tn) }}</td><td class="num">{{ '{:,}'.format(confusion.fp) }}</td></tr>
+              <tr><td>Actual Attack</td><td class="num">{{ '{:,}'.format(confusion.fn) }}</td><td class="num">{{ '{:,}'.format(confusion.tp) }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="color:var(--text-dim); font-size:13.5px; margin-bottom:0;">
+          Only {{ confusion.fn }} attacks were missed (classified as benign) out of {{ '{:,}'.format(confusion.fn + confusion.tp) }} — consistent with the model's 99.45% attack recall.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gpu">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">GPU Performance</span>
+      <h2>14.58× faster than CPU</h2>
+      <p>A controlled experiment — same 250,000 rows, same Logistic Regression setup — comparing scikit-learn on CPU against cuML on GPU.</p>
+    </div>
+
+    <div class="grid grid-3 reveal">
+      <div class="mini-stat">
+        <span class="value">{{ cpu_gpu.cpu_seconds }}s</span>
+        <span class="label">CPU (scikit-learn), {{ '{:,}'.format(cpu_gpu.rows) }} rows</span>
+      </div>
+      <div class="mini-stat">
+        <span class="value">{{ cpu_gpu.gpu_seconds }}s</span>
+        <span class="label">GPU (cuML), {{ '{:,}'.format(cpu_gpu.rows) }} rows</span>
+      </div>
+      <div class="mini-stat">
+        <span class="value" style="color:var(--accent);">{{ cpu_gpu.speedup }}×</span>
+        <span class="label">Observed GPU Speedup</span>
+      </div>
+    </div>
+
+    <div class="grid grid-3 reveal" style="margin-top:20px;">
+      <div class="chart-card">
+        <img src="{{ url_for('static', filename='images/charts/train_inference_time.png') }}" alt="Train and inference time" data-lightbox>
+        <div class="chart-body"><h4>Training &amp; Inference Time</h4><p>Linear SVC is fastest; Random Forest takes longer but wins on accuracy.</p></div>
+      </div>
+      <div class="chart-card">
+        <img src="{{ url_for('static', filename='images/charts/gpu_utilization.png') }}" alt="GPU utilization" data-lightbox>
+        <div class="chart-body"><h4>Max GPU Utilization</h4><p>Random Forest drives GPU usage to 100% during training.</p></div>
+      </div>
+      <div class="chart-card">
+        <img src="{{ url_for('static', filename='images/charts/gpu_memory_usage.png') }}" alt="GPU memory usage" data-lightbox>
+        <div class="chart-body"><h4>Max GPU Memory Usage</h4><p>All three models use roughly ~5GB of GPU memory.</p></div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="margin-top:20px;">
+      <h4 style="margin-top:0;">Workflow-Level GPU Metrics</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Operation</th><th class="num">Time (s)</th><th class="num">Avg GPU %</th><th class="num">Max GPU %</th></tr></thead>
+          <tbody>
+            {% for w in workflow_metrics %}
+            <tr><td>{{ w.op }}</td><td class="num">{{ w.time }}</td><td class="num">{{ w.avg_gpu }}</td><td class="num">{{ w.max_gpu }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Live Demo</span>
+      <h2>Try the intrusion detector</h2>
+      <p>Enter (or load an example of) network-flow statistics and get an instant Benign / Attack prediction with a confidence score.</p>
+    </div>
+
+    <div class="demo-panel reveal">
+      <div class="demo-form">
+        <div class="demo-form-head">
+          <h3>Flow Feature Input</h3>
+          <div class="preset-buttons">
+            <button type="button" class="btn btn-ghost btn-sm" id="preset-benign">Load Benign Example</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="preset-attack">Load Attack Example</button>
+          </div>
+        </div>
+        <form id="predict-form">
+          <div class="field-grid">
+            {% for f in form_fields %}
+            <div class="field">
+              <label for="f-{{ f.name }}">{{ f.label }}</label>
+              <input type="number" step="any" min="0" id="f-{{ f.name }}" name="{{ f.name }}"
+                     data-benign="{{ f.typical_benign }}" data-attack="{{ f.typical_attack }}"
+                     placeholder="e.g. {{ f.typical_benign }}" required>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="demo-actions">
+            <button type="submit" class="btn btn-primary btn-block" id="predict-btn">Analyze Traffic</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="result-panel" id="result-panel">
+        <div class="result-empty" id="result-empty">
+          Fill in the form (or load an example) and click <strong>Analyze Traffic</strong> to see a prediction here.
+        </div>
+        <div id="result-content" style="display:none;">
+          <div class="result-verdict" id="result-verdict">
+            <span class="result-icon" id="result-icon">🛡️</span>
+            <div>
+              <p class="verdict-label" id="verdict-label">—</p>
+              <p class="verdict-sub" id="verdict-sub">—</p>
+            </div>
+          </div>
+          <div class="gauge-row">
+            <div class="gauge">
+              <div class="g-label">Attack Probability</div>
+              <div class="g-value" id="attack-prob">0%</div>
+              <div class="bar-track"><div class="bar-fill" id="attack-bar" style="width:0%; background:var(--danger);"></div></div>
+            </div>
+            <div class="gauge">
+              <div class="g-label">Benign Probability</div>
+              <div class="g-value" id="benign-prob">0%</div>
+              <div class="bar-track"><div class="bar-fill" id="benign-bar" style="width:0%; background:var(--success);"></div></div>
+            </div>
+          </div>
+          <div class="risk-note" id="risk-note">Risk level: —</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer reveal">
+      <strong>About this demo:</strong> the notebook's real Random Forest (99.80% accuracy) was trained with a GPU
+      on 1.37M real CIC-IDS2017 rows via RAPIDS cuML — a pipeline that needs a GPU and the full dataset, neither of
+      which fit a free CPU web host. This live demo instead runs a lightweight scikit-learn Random Forest
+      (held-out accuracy: {{ '%.1f'|format(demo_metrics.accuracy * 100) }}%, F1: {{ '%.1f'|format(demo_metrics.f1_score * 100) }}%)
+      trained on synthetic traffic statistically calibrated to match the real correlations and class patterns this
+      project's EDA discovered. It's a genuine, freely-trained classifier for interactive exploration — not a
+      substitute for the full research result. See <a href="{{ notebook_url }}" target="_blank" rel="noopener">the notebook</a>
+      and <code style="font-family:var(--mono);">ml_model/train_model.py</code> for the exact methodology.
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">About the Project</span>
+      <h2>Academic context &amp; author</h2>
+    </div>
+    <div class="about-grid reveal">
+      <div class="card">
+        <h4 style="margin-top:0;">Author</h4>
+        <p style="margin:0 0 4px; font-weight:700;">{{ author.name }}</p>
+        <p style="margin:0 0 4px; color:var(--text-dim);">{{ author.program }}</p>
+        <p style="margin:0 0 16px; color:var(--text-dim);">Course: {{ author.course }}</p>
+        <h4>Technology Stack</h4>
+        <div class="tech-pills">
+          {% for t in tech_stack %}<span class="pill">{{ t }}</span>{% endfor %}
+        </div>
+      </div>
+      <div class="card">
+        <h4 style="margin-top:0;">Limitations</h4>
+        <ul class="limitations-list">
+          {% for l in limitations %}<li>{{ l }}</li>{% endfor %}
+        </ul>
+        <h4>Dataset Reference</h4>
+        <p style="color:var(--text-dim); font-size:13.5px; margin-bottom:0;">{{ author.dataset_ref }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-links">
+      <a href="{{ repo_url }}" target="_blank" rel="noopener">GitHub Repository</a>
+      <a href="{{ notebook_url }}" target="_blank" rel="noopener">Jupyter Notebook</a>
+      <a href="{{ report_url }}" target="_blank" rel="noopener">Full PDF Report</a>
+      <a href="#top">Back to top</a>
+    </div>
+    <p class="copyright">CyberShield AI — {{ author.name }} · Tuwaiq Academy, Diploma in Data Science &amp; AI</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox"><img id="lightbox-img" src="" alt=""></div>
+
+<script id="form-fields-data" type="application/json">{{ form_fields | tojson }}</script>
+
+{% endblock %}
