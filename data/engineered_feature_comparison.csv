@@ -1,0 +1,3 @@
+feature,benign_log_median,attack_log_median
+avg_bytes_per_packet,4.247066,6.68286
+fwd_bwd_packet_ratio,0.693147,0.693147

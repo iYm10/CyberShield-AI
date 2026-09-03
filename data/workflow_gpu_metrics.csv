@@ -1,0 +1,4 @@
+operation,time_seconds,avg_gpu_percent,max_gpu_percent,avg_memory_mb,max_memory_mb
+Data Loading (cuDF),2.99,21.0,48.0,1739.11,4166.19
+Data Cleaning (cuDF),3.53,30.88,55.0,2945.83,3212.19
+Feature Scaling (cuML),2.3,28.36,100.0,4634.01,4790.19
