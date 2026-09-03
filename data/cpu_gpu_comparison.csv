@@ -1,3 +1,0 @@
-environment,rows,time_seconds
-CPU - scikit-learn,250000,22.568548
-GPU - cuML,250000,1.547914

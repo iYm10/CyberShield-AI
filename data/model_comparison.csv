@@ -1,4 +1,0 @@
-model,accuracy,precision,recall,f1_score,train_time_seconds,inference_time_seconds,train_avg_gpu_util_percent,train_max_gpu_util_percent,train_avg_memory_used_mb,train_max_memory_used_mb,inference_avg_gpu_util_percent,inference_max_gpu_util_percent,inference_avg_memory_used_mb,inference_max_memory_used_mb
-cuML Random Forest,0.998046,0.996577,0.994511,0.995543,18.286441,0.311667,97.244444,100.0,4972.676389,4974.1875,18.0,18.0,4702.1875,4702.1875
-cuML Logistic Regression,0.946892,0.870469,0.890534,0.880388,2.693004,0.063987,66.230769,83.0,4860.802885,4882.1875,,,,
-cuML Linear SVC,0.940257,0.860931,0.867998,0.86445,0.225556,0.027167,10.0,10.0,4910.1875,4910.1875,,,,
