@@ -105,7 +105,7 @@ ENGINEERED_FEATURES = [
     },
 ]
 
-CHARTS = [
+EDA_CHARTS_TRAFFIC = [
     {
         "file": "benign_vs_attack.png",
         "title": "Benign vs. Attack Distribution",
@@ -121,6 +121,9 @@ CHARTS = [
         "title": "Records per CIC-IDS2017 Source File",
         "caption": "Flows are distributed across all 8 CIC-IDS2017 capture files (~145K–195K rows each), improving traffic diversity.",
     },
+]
+
+EDA_CHARTS_CORRELATION = [
     {
         "file": "top_correlated_features.png",
         "title": "Top Features Correlated with Attack Traffic",
@@ -136,27 +139,29 @@ CHARTS = [
         "title": "Engineered Features by Traffic Class",
         "caption": "avg_bytes_per_packet clearly separates Benign vs. Attack traffic; fwd_bwd_packet_ratio does not.",
     },
-    {
-        "file": "model_performance_comparison.png",
-        "title": "Model Performance Comparison",
-        "caption": "cuML Random Forest outperforms Logistic Regression and Linear SVC on every metric.",
-    },
-    {
-        "file": "train_inference_time.png",
-        "title": "GPU Training & Inference Time",
-        "caption": "Linear SVC trains fastest (0.23s); Random Forest takes longer (18.3s) but delivers the best accuracy.",
-    },
-    {
-        "file": "gpu_utilization.png",
-        "title": "Maximum GPU Utilization",
-        "caption": "Random Forest drives GPU utilization to 100% during training — the most GPU-intensive stage of the workflow.",
-    },
-    {
-        "file": "gpu_memory_usage.png",
-        "title": "Maximum GPU Memory Usage",
-        "caption": "All three models use roughly ~5GB of GPU memory, slightly higher during training than inference.",
-    },
 ]
+
+# Used individually (not looped) inside the Models and GPU Performance panels.
+CHART_MODEL_PERFORMANCE = {
+    "file": "model_performance_comparison.png",
+    "title": "Model Performance Comparison",
+    "caption": "cuML Random Forest outperforms Logistic Regression and Linear SVC on every metric.",
+}
+CHART_TRAIN_INFERENCE_TIME = {
+    "file": "train_inference_time.png",
+    "title": "GPU Training & Inference Time",
+    "caption": "Linear SVC trains fastest (0.23s); Random Forest takes longer (18.3s) but delivers the best accuracy.",
+}
+CHART_GPU_UTILIZATION = {
+    "file": "gpu_utilization.png",
+    "title": "Maximum GPU Utilization",
+    "caption": "Random Forest drives GPU utilization to 100% during training — the most GPU-intensive stage of the workflow.",
+}
+CHART_GPU_MEMORY = {
+    "file": "gpu_memory_usage.png",
+    "title": "Maximum GPU Memory Usage",
+    "caption": "All three models use roughly ~5GB of GPU memory, slightly higher during training than inference.",
+}
 
 TECH_STACK = [
     "Python", "NVIDIA RAPIDS", "cuDF", "cuML", "CuPy", "Pandas", "NumPy",
